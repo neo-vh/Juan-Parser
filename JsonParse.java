@@ -10,14 +10,13 @@ public class JsonParse {
         String file_contents = new String();
 
         try {
-
-        file_contents = Files.readString(Path.of(filePath));
-
+            file_contents = Files.readString(Path.of(filePath));
         } catch (IOException e) {
             System.out.println(String.format("Error %s Ecountered", e));
         }
 
         return file_contents;
     }
+
     
 }
