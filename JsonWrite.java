@@ -1,33 +1,53 @@
 import java.io.*;
 import java.util.*;
-
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 public class JsonWrite {
 
 public static void main(String[] args)
 {
     HashMap<String, Integer> map = new HashMap<>();
     map.put("juan", 16);
-    System.out.println("hello world !");
-    writes(map);
+    map.put("neo", 15);
+    try{
+        writes(map);
+    }catch(IOException e){}
 
 }
-public static void writes(HashMap<String, Integer> structure)
+public static void writes(HashMap<String, Integer> structure) throws IOException
 { 
-Set<String> structure3 = structure.keySet();
 
-String[] chad = new String[structure3.size()];
+Set<String> kns = structure.keySet();
+// kns is keys and values
 
-for(int i = 0; i< structure3.size(); i++){
-    System.out.println(structure3.toArray()[i]);
-    chad[i] = String.valueOf(structure3.toArray()[i]);
-    String neo = "\"" + chad[i] + "\"";
-  
-    chad[i] = neo;
+String[] na = new String[kns.size()];
+// na new array
 
+Map<String, Integer> finalmap = new HashMap<>();
+for(int i = 0; i< kns.size(); i++){
+    na[i] = String.valueOf(kns.toArray()[i]);
+    String qkns = "\"" + na[i] + "\"";
+    na[i] = qkns;
+    String keys = String.valueOf(kns.toArray()[i]);
+    String maptojson = new String( qkns + ":" + structure.get(keys) + "}");
+    String filepath = "testing.json";
+    try{
+    Files.writeString(Paths.get(filepath), "{" + maptojson);
+    System.out.println("Succesfully converted map to jsonn");
+    } catch(IOException e) {
+        System.out.println("Encountered Error");
+    }
     
+// qkns quote keys and values    
 }
-structure3.clear();
-System.out.println(Arrays.toString(chad));
-System.out.println(structure3);
+StringJoiner json = new StringJoiner(",", "{", "}");
+for(Map.Entry<String, Integer> entry : structure.entrySet()) {
+    json.add("\"" + entry.getKey() + "\"" + ":" + entry.getValue());
+}
+Files.writeString(Path.of("testing.json"), json.toString());
+
+ 
 }
 }
