@@ -48,13 +48,26 @@ public class JsonRead {
                 position++;
                 while (contents.charAt(position) != '"') {
                     newKey = newKey + contents.charAt(position);
+                    Character c = contents.charAt(position); // just a different version of currentChar
 
-                    switch (currentChar) {
+                    switch (contents.charAt(position)) {
                         case '"' -> {
                             // fileObj.put(newKey, parseString()); 
                         }
+                        case '{' -> {
+                            // fileObj.put(newKey, parseObject());
+                        }
+                        case '[' -> {
+                            // fileObj.put(newKey, parseArray());
+                        }
                         default -> {
 
+                            if (c == '-' || c >= '0' && c <= '9') {
+                                // fileObj.out(newKey, parseInt());
+                            } else {
+                                
+                            }
+                                
                         }
                     }
                 }
