@@ -1,6 +1,7 @@
 
 import java.nio.file.attribute.PosixFileAttributes;
 import java.util.*;
+import javax.management.RuntimeErrorException;
 import javax.xml.parsers.ParserConfigurationException;
 
 
@@ -81,10 +82,19 @@ public class JsonRead {
 
                     }
                     case '[' -> {
-                        
+
+                    }
+                    case '{' -> {
+
                     }
                     default -> {
+                        if (contents.charAt(position) == '-' || contents.charAt(position) >= '0' && contents.charAt(position) <= '9') {
 
+                        } else {
+
+                            throw new UnknownType(String.format("Type at char %c not a match for any known types", contents.charAt(position)), position);
+
+                        }
                     }
                 }
 
@@ -108,5 +118,11 @@ class JSONParseException extends RuntimeException {
     public JSONParseException(String message, int position) {
         super(String.format("Failure | %s | at position | %d |", message, position));
 
+    }
+}
+
+class UnknownType extends RuntimeException {
+    public UnknownType(String message, int position) {
+        super(String.format("Failure | %s | at position | %d |", message, position));
     }
 }
