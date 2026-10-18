@@ -117,61 +117,61 @@ public class JsonRead {
 
         int start = position;
 
-        if (contents.charAt(position) == 'n') {
-
-            position++;
-
-            while (position < contents.length() && contents.charAt(position) != ',' && contents.charAt(position) != '}' && contents.charAt(position) != ']') {
+        switch (contents.charAt(position)) {
+            case 'f' -> {
                 position++;
+
+                while (position < contents.length() && contents.charAt(position) != ']' && contents.charAt(position) != ',' && contents.charAt(position) != '}') {
+                    position++;
+                }
+
+                if (position >= contents.length()) {
+                    throw new JSONParseException("Encountered end of file while parsing for false", position);
+                }
+
+                if (contents.substring(start, position).equals("false")) {
+                    value = false;
+                } else {
+                    throw new UnknownType(String.format("Unknown type encountered while parsing for false -> %s", contents.substring(start, position)), position);
+                }
             }
-
-            if (position >= contents.length()) {
-                throw new JSONParseException("Reached end of file while checking for null value", position);
-            }
-
-            if (contents.substring(start, position).equals("null")) {
-                value = null;
-            }
-            else {
-                throw new UnknownType(String.format("Unknown type encountered expected null -> %s", contents.substring(start, position)), position);
-            }
-
-        } else if (contents.charAt(position) == 't') {
-
-            position++;
-
-            while (position < contents.length() && contents.charAt(position) != ',' && contents.charAt(position) != '}' && contents.charAt(position) != ']') {
+            case 'n' -> {
                 position++;
+
+                while (position < contents.length() && contents.charAt(position) != ']' && contents.charAt(position) != ',' && contents.charAt(position) != '}') {
+                    position++;
+                }
+
+                if (position >= contents.length()) {
+                    throw new JSONParseException("Encountered end of file while parsing for null", position);
+                }
+
+                if (contents.substring(start, position).equals("null")) {
+                    value = false;
+                } else {
+                    throw new UnknownType(String.format("Unknown type encountered while parsing for null -> %s", contents.substring(start, position)), position);
+                }
             }
-
-            if (position >= contents.length()) {
-                throw new JSONParseException("Expected true but reached end of file while parsing", position);
-            }
-
-            if (contents.substring(start, position).equals("true")) {
-                value = true;
-            } else {
-                throw new UnknownType(String.format("Unknown type encountered expected true -> %s", contents.substring(position)), position);
-            }
-
-        } else if (contents.charAt(position) == 'f') {
-
-            position++;
-
-            while (position < contents.length() && contents.charAt(position) != ']' && contents.charAt(position) != ',' && contents.charAt(position) != '}') {
+            case 't' -> {
                 position++;
-            }
 
-            if (position >= contents.length()) {
-                throw new JSONParseException("Encountered end of file while parsing for false", position);
-            }
+                while (position < contents.length() && contents.charAt(position) != ']' && contents.charAt(position) != ',' && contents.charAt(position) != '}') {
+                    position++;
+                }
 
-            if (contents.substring(start, position).equals("false")) {
-                value = false;
-            } else {
-                throw new UnknownType(String.format("Unknown type encountered while parsing for false -> %s", contents.substring(start, position)), position);
-            }
+                if (position >= contents.length()) {
+                    throw new JSONParseException("Encountered end of file while parsing for true", position);
+                }
 
+                if (contents.substring(start, position).equals("true")) {
+                    value = false;
+                } else {
+                    throw new UnknownType(String.format("Unknown type encountered while parsing for true -> %s", contents.substring(start, position)), position);
+                }
+            }
+            default -> {
+                
+            }
         }
 
         return value;
