@@ -1,5 +1,7 @@
 
+import java.nio.file.attribute.PosixFileAttributes;
 import java.util.*;
+import javax.xml.parsers.ParserConfigurationException;
 
 
 public class JsonRead {
@@ -23,9 +25,9 @@ public class JsonRead {
         }
     }
 
-    public Object fromJson() {
+    public Map<String, Object> fromJson() {
 
-        Object fileObj = new Object();
+        Map<String, Object> fileObj = new HashMap<>();
 
         fileObj = parseValue(fileObj);
 
@@ -34,45 +36,61 @@ public class JsonRead {
     }
 
 
-    private Object parseValue(Object fileObj) {
+    private Map<String, Object> parseValue(Map<String, Object> fileObj) throws JSONParseException {
         
-        Character currentChar;
+        char currentChar;
         String newKey = new String();
 
-        for (this.position = 0; this.position < contents.length(); this.position++) {
+        for (this.position = 0; this.position < contents.length(); this.position++) { // for every char in the file
             
             skipWhiteSpace();
             currentChar = contents.charAt(position);
-
-            if (currentChar == '"') {
+            
+            if (currentChar == '"') { // start of new key
+                
+                int start_string = position + 1;
                 position++;
-                while (contents.charAt(position) != '"') {
-                    newKey = newKey + contents.charAt(position);
-                    Character c = contents.charAt(position); // just a different version of currentChar
 
-                    switch (contents.charAt(position)) {
-                        case '"' -> {
-                            // fileObj.put(newKey, parseString()); 
-                        }
-                        case '{' -> {
-                            // fileObj.put(newKey, parseObject());
-                        }
-                        case '[' -> {
-                            // fileObj.put(newKey, parseArray());
-                        }
-                        default -> {
+                while (position < contents.length()) {
 
-                            if (c == '-' || c >= '0' && c <= '9') {
-                                // fileObj.out(newKey, parseInt());
-                            } else {
-                                
-                            }
-                                
-                        }
+                    char c = contents.charAt(position);
+                    
+                    if (c == '"') {
+                        // end of string found
+                        String key = contents.substring(start_string, position); // position is on end quote
+                        position++; // char after end quote
+                        
+                        newKey = key;
+                        break;
+                    }
+
+                    position++;
+
+                }
+
+                skipWhiteSpace();
+                
+                if (contents.charAt(position) != ':') {  
+                    throw new JSONParseException(String.format("Expected char not found instead %c", currentChar), position);                    
+                }
+
+                position++;
+
+                switch (contents.charAt(position)) {
+                    case '"' -> {
+
+                    }
+                    case '[' -> {
+                        
+                    }
+                    default -> {
+
                     }
                 }
-            }
 
+
+            }
+            
         }
 
             return fileObj;
@@ -84,4 +102,11 @@ public class JsonRead {
         reader.fromJson();
     }
 
+}
+
+class JSONParseException extends RuntimeException {
+    public JSONParseException(String message, int position) {
+        super(String.format("Failure | %s | at position | %d |", message, position));
+
+    }
 }
