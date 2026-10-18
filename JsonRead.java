@@ -1,4 +1,5 @@
 
+import com.sun.jdi.IntegerType;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.util.*;
 import javax.management.RuntimeErrorException;
@@ -72,24 +73,31 @@ public class JsonRead {
                 skipWhiteSpace();
                 
                 if (contents.charAt(position) != ':') {  
-                    throw new JSONParseException(String.format("Expected char not found instead %c", currentChar), position);                    
+                    throw new JSONParseException(String.format("Expected char not found instead %c", contents.charAt(position)), position);                    
                 }
 
                 position++;
+                skipWhiteSpace();
+
+                if (position >= contents.length()) {
+                    throw new JSONParseException("Excpeted a value got end of file", position);
+                } 
 
                 switch (contents.charAt(position)) {
                     case '"' -> {
-
+                        System.out.println("calling string parser");
+                        fileObj.put(newKey, parseString());
                     }
                     case '[' -> {
-
+                        System.out.println("calling array parser");
                     }
                     case '{' -> {
-
+                        System.out.println("calling object parser");
                     }
                     default -> {
                         if (contents.charAt(position) == '-' || contents.charAt(position) >= '0' && contents.charAt(position) <= '9') {
-
+                            System.out.println("calling int parser");
+                            fileObj.put(newKey, parseInteger());
                         } else {
 
                             throw new UnknownType(String.format("Type at char %c not a match for any known types", contents.charAt(position)), position);
@@ -97,19 +105,46 @@ public class JsonRead {
                         }
                     }
                 }
-
-
             }
-            
         }
 
             return fileObj;
+    }
+    
+    private String parseString() {
+
+        StringBuilder value = new StringBuilder();
+
+        position++;
+
+        while (contents.charAt(position) != '"') {
+            value.append(contents.charAt(position));
+            position++;
         }
+
+        return value.toString();
+    }
+
+    private int parseInteger() {
+
+        int start = position;
+
+        if (contents.charAt(position) == '-') {
+            position++;
+        }   
+
+        while (position < contents.length() && contents.charAt(position) >= '0' && contents.charAt(position) <= '9') {
+            position++;
+        }
+
+        return Integer.parseInt(contents.substring(start, position));
+        
+    }
 
     public static void main(String[] args) {
         String file = "C:\\Users\\USER\\Desktop\\Juan-Parser\\testing.json";
         JsonRead reader = new JsonRead(file);
-        reader.fromJson();
+        System.out.println(reader.fromJson());
     }
 
 }

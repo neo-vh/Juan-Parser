@@ -1,6 +1,5 @@
 {
-    "something" : {
-        "key": "value",
-        "something": []
-    }
+    "something": "value",
+    "another": "value",
+    "another_another": 42
 }
