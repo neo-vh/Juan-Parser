@@ -2,28 +2,13 @@
 import java.util.*;
 
 
-// Goal
-// create a main value parser that calls each variable types parser
-// each parser should be recursive to check for multi level objects
-// each variable type should have a parser
-
-// example object to read
-
-// {
-//      "something": {
-//          "age": 12,
-//          "height": "5'4"
-//           }
-// }
-
-
 public class JsonRead {
 
     private final String contents;
     private int position;
 
-    public JsonRead(String contents) {
-        this.contents = contents;
+    public JsonRead(String file) {
+        this.contents = JsonParse.readFile(file);
     }
 
     private void skipWhiteSpace() {
@@ -38,57 +23,52 @@ public class JsonRead {
         }
     }
 
+    public Object fromJson() {
 
-    private void parseValue() {
-        while (position < contents.length()) {
+        Object fileObj = new Object();
+
+        fileObj = parseValue(fileObj);
+
+        return fileObj;
+
+    }
+
+
+    private Object parseValue(Object fileObj) {
+        
+        Character currentChar;
+        String newKey = new String();
+
+        for (this.position = 0; this.position < contents.length(); this.position++) {
+            
             skipWhiteSpace();
+            currentChar = contents.charAt(position);
 
-            if (position >= contents.length()) {
-                break;
-            }
+            if (currentChar == '"') {
+                position++;
+                while (contents.charAt(position) != '"') {
+                    newKey = newKey + contents.charAt(position);
 
-            char currentChar = contents.charAt(position);
-            switch (currentChar) {
-                case '"' -> {
-                    System.out.println(String.format("String %c", currentChar));
-                }
-                case '{' -> {
-                    System.out.println(String.format("Object %c", currentChar));
-                }
-                case '[' -> {
-                    System.out.println(String.format("List %c", currentChar));
-                }
-                default -> {
-                    if (currentChar == '-' || currentChar >= '0' && currentChar <= '9') {
-                        System.out.println(String.format("Int %c", currentChar));
-                    } else {
-                        System.out.println(currentChar);
+                    switch (currentChar) {
+                        case '"' -> {
+                            // fileObj.put(newKey, parseString()); 
+                        }
+                        default -> {
+
+                        }
                     }
-
                 }
             }
-            position++;
+
         }
-    }
 
-    public Object parse() { // final external call for reading and returning the json file turned to an object
-
-        // Object result = parseValue();
-
-        return new Object();
-    }
-
-    private String parseString() {
-
-        String value = new String();
-
-        return value;
-    }
+            return fileObj;
+        }
 
     public static void main(String[] args) {
-        String fileContents = JsonParse.readFile("C:\\Users\\USER\\Desktop\\Juan-Parser\\testing.json");
-        JsonRead reader = new JsonRead(fileContents);
-        reader.parseValue();
+        String file = "C:\\Users\\USER\\Desktop\\Juan-Parser\\testing.json";
+        JsonRead reader = new JsonRead(file);
+        reader.fromJson();
     }
 
 }
