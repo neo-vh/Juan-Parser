@@ -33,7 +33,7 @@ public class JsonRead {
     }
 
 
-    private Map<String, Object> parseValue(Map<String, Object> fileObj) throws JSONParseException {
+    private Map<String, Object> parseValue(Map<String, Object> fileObj) {
         
         char currentChar;
         String newKey = new String();
@@ -93,6 +93,9 @@ public class JsonRead {
                         if (contents.charAt(position) == '-' || contents.charAt(position) >= '0' && contents.charAt(position) <= '9') {
                             System.out.println("calling int parser");
                             fileObj.put(newKey, parseInteger());
+                        } else if (contents.charAt(position) == 'f' || contents.charAt(position) == 't' || contents.charAt(position) == 'n') {
+                            System.out.println("calling boolean parser");
+                            fileObj.put(newKey, parseBoolean());
                         } else {
 
                             throw new UnknownType(String.format("Type at char %c not a match for any known types", contents.charAt(position)), position);
@@ -104,6 +107,75 @@ public class JsonRead {
         }
 
             return fileObj;
+    }
+
+    private Boolean parseBoolean() {
+
+        Boolean value = null;
+
+        // check if value is true false or null
+
+        int start = position;
+
+        if (contents.charAt(position) == 'n') {
+
+            position++;
+
+            while (position < contents.length() && contents.charAt(position) != ',' && contents.charAt(position) != '}' && contents.charAt(position) != ']') {
+                position++;
+            }
+
+            if (position >= contents.length()) {
+                throw new JSONParseException("Reached end of file while checking for null value", position);
+            }
+
+            if (contents.substring(start, position).equals("null")) {
+                value = null;
+            }
+            else {
+                throw new UnknownType(String.format("Unknown type encountered expected null -> %s", contents.substring(start, position)), position);
+            }
+
+        } else if (contents.charAt(position) == 't') {
+
+            position++;
+
+            while (position < contents.length() && contents.charAt(position) != ',' && contents.charAt(position) != '}' && contents.charAt(position) != ']') {
+                position++;
+            }
+
+            if (position >= contents.length()) {
+                throw new JSONParseException("Expected true but reached end of file while parsing", position);
+            }
+
+            if (contents.substring(start, position).equals("true")) {
+                value = true;
+            } else {
+                throw new UnknownType(String.format("Unknown type encountered expected true -> %s", contents.substring(position)), position);
+            }
+
+        } else if (contents.charAt(position) == 'f') {
+
+            position++;
+
+            while (position < contents.length() && contents.charAt(position) != ']' && contents.charAt(position) != ',' && contents.charAt(position) != '}') {
+                position++;
+            }
+
+            if (position >= contents.length()) {
+                throw new JSONParseException("Encountered end of file while parsing for false", position);
+            }
+
+            if (contents.substring(start, position).equals("false")) {
+                value = false;
+            } else {
+                throw new UnknownType(String.format("Unknown type encountered while parsing for false -> %s", contents.substring(start, position)), position);
+            }
+
+        }
+
+        return value;
+
     }
     
     private String parseString() {
@@ -132,12 +204,16 @@ public class JsonRead {
             position++;
         }
 
+        if (position >= contents.length()) {
+            throw new JSONParseException("Encountered end of file while parsing int", position);
+        }
+
         return Integer.parseInt(contents.substring(start, position));
         
     }
 
     public static void main(String[] args) {
-        String file = "C:\\Users\\USER\\Desktop\\Juan-Parser\\read_testing.json";
+        String file = "read_testing.json";
         JsonRead reader = new JsonRead(file);
         System.out.println(reader.fromJson());
     }
