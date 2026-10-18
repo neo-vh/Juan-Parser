@@ -7,26 +7,27 @@ public static void main(String[] args)
 {
     HashMap<String, Integer> map = new HashMap<>();
     map.put("juan", 16);
-    Scanner sc = new Scanner(System.in);
     System.out.println("hello world !");
-    String blegh = sc.nextLine();
-    System.out.println(blegh);
     writes(map);
 
 }
 public static void writes(HashMap<String, Integer> structure)
 { 
-LinkedList<String> chad = new LinkedList<>();
 Set<String> structure3 = structure.keySet();
-chad.addAll(structure3);
-for(int i = 0; i< chad.size(); i++){
-    String neo = chad.get(i);
-    chad.set(i, "i" + neo);
+
+String[] chad = new String[structure3.size()];
+
+for(int i = 0; i< structure3.size(); i++){
+    System.out.println(structure3.toArray()[i]);
+    chad[i] = String.valueOf(structure3.toArray()[i]);
+    String neo = "\"" + chad[i] + "\"";
+  
+    chad[i] = neo;
 
     
 }
 structure3.clear();
-structure3.addAll(chad);
+System.out.println(Arrays.toString(chad));
 System.out.println(structure3);
 }
 }
