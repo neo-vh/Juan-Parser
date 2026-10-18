@@ -1,10 +1,5 @@
 
-import com.sun.jdi.IntegerType;
-import java.nio.file.attribute.PosixFileAttributes;
 import java.util.*;
-import javax.management.RuntimeErrorException;
-import javax.xml.parsers.ParserConfigurationException;
-
 
 public class JsonRead {
 
@@ -142,7 +137,7 @@ public class JsonRead {
     }
 
     public static void main(String[] args) {
-        String file = "C:\\Users\\USER\\Desktop\\Juan-Parser\\testing.json";
+        String file = "C:\\Users\\USER\\Desktop\\Juan-Parser\\read_testing.json";
         JsonRead reader = new JsonRead(file);
         System.out.println(reader.fromJson());
     }
