@@ -3,6 +3,7 @@ import java.util.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 public class JsonWrite {
 
 public static void main(String[] args)
@@ -10,36 +11,43 @@ public static void main(String[] args)
     HashMap<String, Integer> map = new HashMap<>();
     map.put("juan", 16);
     map.put("neo", 15);
-    writes(map);
+    try{
+        writes(map);
+    }catch(IOException e){}
 
 }
-public static void writes(HashMap<String, Integer> structure)
+public static void writes(HashMap<String, Integer> structure) throws IOException
 { 
+
 Set<String> kns = structure.keySet();
 // kns is keys and values
+
 String[] na = new String[kns.size()];
 // na new array
+
 Map<String, Integer> finalmap = new HashMap<>();
 for(int i = 0; i< kns.size(); i++){
-    System.out.println(kns.toArray()[i]);
     na[i] = String.valueOf(kns.toArray()[i]);
     String qkns = "\"" + na[i] + "\"";
     na[i] = qkns;
     String keys = String.valueOf(kns.toArray()[i]);
-    String maptojson = new String("{" + String.valueOf(qkns)+ ":" + structure.get(keys) + "}");
+    String maptojson = new String( qkns + ":" + structure.get(keys) + "}");
     String filepath = "testing.json";
     try{
-    Files.writeString(Paths.get(filepath), maptojson);
+    Files.writeString(Paths.get(filepath), "{" + maptojson);
     System.out.println("Succesfully converted map to jsonn");
     } catch(IOException e) {
         System.out.println("Encountered Error");
     }
-// qkns quote keys and values
-
     
+// qkns quote keys and values    
 }
-System.out.println(Arrays.toString(na));
-System.out.println(String.valueOf(finalmap));
+StringJoiner json = new StringJoiner(",", "{", "}");
+for(Map.Entry<String, Integer> entry : structure.entrySet()) {
+    json.add("\"" + entry.getKey() + "\"" + ":" + entry.getValue());
+}
+Files.writeString(Path.of("testing.json"), json.toString());
+
  
 }
 }
