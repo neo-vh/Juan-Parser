@@ -32,6 +32,40 @@ public class JsonRead {
 
     }
 
+    private Object dispatchParser() {
+
+        Object value = new Object();
+
+        switch (contents.charAt(position)) {
+            case '"' -> {
+                System.out.println("calling string parser");
+                value = parseString();
+            }
+            case '[' -> {
+                System.out.println("calling array parser");
+                value = parseList();
+            }
+            case '{' -> {
+                System.out.println("calling object parser");
+                value = parseDict();
+            }
+            default -> {
+                if (contents.charAt(position) == '-' || contents.charAt(position) >= '0' && contents.charAt(position) <= '9') {
+                    System.out.println("calling int parser");
+                    value = parseInteger();
+                } else if (contents.charAt(position) == 'f' || contents.charAt(position) == 't' || contents.charAt(position) == 'n') {
+                    System.out.println("calling boolean parser");
+                    value = parseBoolean();
+                } else {
+
+                    throw new UnknownType(String.format("Type at char %c not a match for any known types", contents.charAt(position)), position);
+
+                }
+            }
+        }
+        return value;
+    }
+
 
     private Map<String, Object> parseValue(Map<String, Object> fileObj) {
         
@@ -78,31 +112,8 @@ public class JsonRead {
                     throw new JSONParseException("Excpeted a value got end of file", position);
                 } 
 
-                switch (contents.charAt(position)) {
-                    case '"' -> {
-                        System.out.println("calling string parser");
-                        fileObj.put(newKey, parseString());
-                    }
-                    case '[' -> {
-                        System.out.println("calling array parser");
-                    }
-                    case '{' -> {
-                        System.out.println("calling object parser");
-                    }
-                    default -> {
-                        if (contents.charAt(position) == '-' || contents.charAt(position) >= '0' && contents.charAt(position) <= '9') {
-                            System.out.println("calling int parser");
-                            fileObj.put(newKey, parseInteger());
-                        } else if (contents.charAt(position) == 'f' || contents.charAt(position) == 't' || contents.charAt(position) == 'n') {
-                            System.out.println("calling boolean parser");
-                            fileObj.put(newKey, parseBoolean());
-                        } else {
+                fileObj.put(newKey, dispatchParser());
 
-                            throw new UnknownType(String.format("Type at char %c not a match for any known types", contents.charAt(position)), position);
-
-                        }
-                    }
-                }
             }
         }
 
@@ -170,7 +181,7 @@ public class JsonRead {
                 }
             }
             default -> {
-                
+
             }
         }
 
@@ -188,6 +199,8 @@ public class JsonRead {
             value.append(contents.charAt(position));
             position++;
         }
+
+        position++; // leave position on the character after closing quote
 
         return value.toString();
     }
@@ -210,6 +223,50 @@ public class JsonRead {
 
         return Integer.parseInt(contents.substring(start, position));
         
+    }
+
+    private Map<String, Object> parseDict() {
+
+        Map<String, Object> value = new HashMap<>();
+
+        return value;
+
+    }
+
+    private Object[] parseList() { // parse a list that could contain any of the above data types itself included
+
+        List<Object> value = new ArrayList<>();
+
+        position++;
+        skipWhiteSpace();
+
+        if (position < contents.length() && contents.charAt(position) == ']') {
+            position++;
+            return value.toArray();
+        }
+
+        while (position < contents.length() && contents.charAt(position) != ']') { 
+            value.add(dispatchParser()); // run dispatch parser on the value (consumes entire value when ran so it will advance position to the next comma)
+            skipWhiteSpace();
+
+            if (position >= contents.length()) {
+                throw new JSONParseException("Reached end of file while parsing list", position);
+            }
+
+            char next = contents.charAt(position);
+
+            if (next == ',') {
+                position++;
+                skipWhiteSpace();
+            } else if (next != ']') {
+                throw new JSONParseException("Expected , or ] got neither", position);
+            }
+        }
+
+        position++;
+
+        return value.toArray();
+
     }
 
     public static void main(String[] args) {

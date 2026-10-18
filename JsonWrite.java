@@ -48,6 +48,6 @@ for(Map.Entry<String, Integer> entry : structure.entrySet()) {
 }
 Files.writeString(Path.of("write_testing.json"), json.toString()); // gebruik op die oomblik n relative path beter om absolute te gebruik (C:\Users\USER\Desktop\Juan-Parser\write_testing.json) haat jou :)
 
- 
+
 }
 }
