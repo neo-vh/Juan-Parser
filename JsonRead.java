@@ -19,12 +19,23 @@ public class JsonRead {
 
     }
 
-    private char decodeEscape() {
+    private char decodeEscape() { // only called when a backslash is encountered
         
-        char decoded = contents.charAt(position);
+        if (contents.charAt(position) != '\\') {
+            throw new JSONParseException(String.format("Decoder expected backslash got %c", contents.charAt(position)), position);
+        }
+
+        int backslashPos = position;
+
+        position++;
+
+        String escapedLiteral = contents.substring(backslashPos, position); // contains the entire escaped character
+        char decoded; 
         
         
 
+
+        decoded = '0';
         return decoded;
 
 
