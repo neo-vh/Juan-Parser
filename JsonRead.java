@@ -32,7 +32,7 @@ public class JsonRead {
         String escapedLiteral = contents.substring(backslashPos, position); // contains the entire escaped character
         char decoded; 
         
-        
+
 
 
         decoded = '0';
@@ -188,7 +188,7 @@ public class JsonRead {
 
         }
 
-        return value;
+        return value.toString();
 
     }
     
