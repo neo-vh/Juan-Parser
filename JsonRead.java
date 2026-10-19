@@ -233,7 +233,7 @@ public class JsonRead {
 
     }
 
-    private Object[] parseList() { // parse a list that could contain any of the above data types itself included
+    private List<Object> parseList() { // parse a list that could contain any of the above data types itself included
 
         List<Object> value = new ArrayList<>();
 
@@ -242,7 +242,7 @@ public class JsonRead {
 
         if (position < contents.length() && contents.charAt(position) == ']') {
             position++;
-            return value.toArray();
+            return value;
         }
 
         while (position < contents.length() && contents.charAt(position) != ']') { 
@@ -265,7 +265,7 @@ public class JsonRead {
 
         position++;
 
-        return value.toArray();
+        return value;
 
     }
 
@@ -273,6 +273,7 @@ public class JsonRead {
         String file = "read_testing.json";
         JsonRead reader = new JsonRead(file);
         System.out.println(reader.fromJson());
+        
     }
 
 }
