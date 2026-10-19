@@ -24,4 +24,4 @@ hs_err_pid*
 replay_pid*
 
 # testing and info file types
-
+# readd .json and .txt once project is done and testing is completed
