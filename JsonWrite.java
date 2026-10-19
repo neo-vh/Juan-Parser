@@ -32,7 +32,7 @@ for(int i = 0; i< kns.size(); i++){
     na[i] = qkns;
     String keys = String.valueOf(kns.toArray()[i]);
     String maptojson = new String( qkns + ":" + structure.get(keys) + "}");
-    String filepath = "write_testing.json";
+    String filepath = "testing.json";
     try{
     Files.writeString(Paths.get(filepath), "{" + maptojson);
     System.out.println("Succesfully converted map to jsonn");
@@ -46,7 +46,7 @@ StringJoiner json = new StringJoiner(",", "{", "}");
 for(Map.Entry<String, Integer> entry : structure.entrySet()) {
     json.add("\"" + entry.getKey() + "\"" + ":" + entry.getValue());
 }
-Files.writeString(Path.of("write_testing.json"), json.toString()); // gebruik op die oomblik n relative path beter om absolute te gebruik (C:\Users\USER\Desktop\Juan-Parser\write_testing.json) haat jou :)
+Files.writeString(Path.of("testing.json"), json.toString()); // gebruik op die oomblik n relative path beter om absolute te gebruik (C:\Users\USER\Desktop\Juan-Parser\testing.json) haat jou :)
 
 
 }

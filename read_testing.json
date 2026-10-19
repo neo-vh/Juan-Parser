@@ -1,0 +1,6 @@
+{
+    "something": "name",
+    "another": 42,
+    "another_another": "hello",
+    "list": ["something", 433, true, null]
+}
