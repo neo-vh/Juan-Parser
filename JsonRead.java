@@ -152,7 +152,7 @@ public class JsonRead {
                 }
 
                 if (contents.substring(start, position).equals("null")) {
-                    value = false;
+                    value = null;
                 } else {
                     throw new UnknownType(String.format("Unknown type encountered while parsing for null -> %s", contents.substring(start, position)), position);
                 }
@@ -169,7 +169,7 @@ public class JsonRead {
                 }
 
                 if (contents.substring(start, position).equals("true")) {
-                    value = false;
+                    value = true;
                 } else {
                     throw new UnknownType(String.format("Unknown type encountered while parsing for true -> %s", contents.substring(start, position)), position);
                 }
