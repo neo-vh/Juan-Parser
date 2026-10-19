@@ -1,13 +1,33 @@
 
 import java.util.*;
 
+
 public class JsonRead {
 
-    private final String contents;
-    private int position;
+    final String contents;
+    int position = 0;
 
-    public JsonRead(String file) {
-        this.contents = JsonParse.readFile(file);
+    public static void main(String[] args) {
+        JsonRead reader = new JsonRead("testing.json");
+        System.out.println(reader.fromJson());
+    }
+
+
+    public JsonRead(String filePath) {
+
+        this.contents = JsonParse.readFile(filePath);
+
+    }
+
+    private char decodeEscape() {
+        
+        char decoded = contents.charAt(position);
+        
+        
+
+        return decoded;
+
+
     }
 
     private void skipWhiteSpace() {
@@ -23,10 +43,10 @@ public class JsonRead {
     }
 
     public Map<String, Object> fromJson() {
-
+        
         Map<String, Object> fileObj = new HashMap<>();
 
-        fileObj = parseValue(fileObj);
+        parseKeys(fileObj);
 
         return fileObj;
 
@@ -35,287 +55,150 @@ public class JsonRead {
     private Object dispatchParser() {
 
         Object value = new Object();
+        char c = contents.charAt(position);
 
-        switch (contents.charAt(position)) {
+        switch (c) {
+
             case '"' -> {
                 value = parseString();
             }
-            case '[' -> {
-                value = parseList();
+            case '[' -> {  
+                // parse array
             }
             case '{' -> {
-                value = parseDict();
-            }
-            default -> {
-                if (contents.charAt(position) == '-' || contents.charAt(position) >= '0' && contents.charAt(position) <= '9') {
-                    value = parseInteger();
-                } else if (contents.charAt(position) == 'f' || contents.charAt(position) == 't' || contents.charAt(position) == 'n') {
-                    value = parseBoolean();
-                } else {
-
-                    throw new UnknownType(String.format("Type at char %c not a match for any known types", contents.charAt(position)), position);
-
-                }
-            }
-        }
-        return value;
-    }
-
-    private Map<String, Object> parseValue(Map<String, Object> fileObj) {
-        
-        char currentChar;
-        String newKey = new String();
-
-        for (this.position = 0; this.position < contents.length(); this.position++) { // for every char in the file
-            
-            skipWhiteSpace();
-            currentChar = contents.charAt(position);
-            
-            if (currentChar == '"') { // start of new key
-                
-                int start_string = position + 1;
-                position++;
-
-                while (position < contents.length()) {
-
-                    char c = contents.charAt(position);
-                    
-                    if (c == '"') {
-                        // end of string found
-                        String key = contents.substring(start_string, position); // position is on end quote
-                        position++; // char after end quote
-                        
-                        newKey = key;
-                        break;
-                    }
-
-                    position++;
-
-                }
-
-                skipWhiteSpace();
-                
-                if (contents.charAt(position) != ':') {  
-                    throw new JSONParseException(String.format("Expected char not found instead %c", contents.charAt(position)), position);                    
-                }
-
-                position++;
-                skipWhiteSpace();
-
-                if (position >= contents.length()) {
-                    throw new JSONParseException("Excpeted a value got end of file", position);
-                } 
-
-                fileObj.put(newKey, dispatchParser());
-
-            }
-        }
-
-            return fileObj;
-    }
-
-    private Boolean parseBoolean() {
-
-        Boolean value = null;
-
-        // check if value is true false or null
-
-        int start = position;
-
-        switch (contents.charAt(position)) {
-            case 'f' -> {
-                position++;
-
-                while (position < contents.length() && contents.charAt(position) != ']' && contents.charAt(position) != ',' && contents.charAt(position) != '}') {
-                    position++;
-                }
-
-                if (position >= contents.length()) {
-                    throw new JSONParseException("Encountered end of file while parsing for false", position);
-                }
-
-                if (contents.substring(start, position).equals("false")) {
-                    value = false;
-                } else {
-                    throw new UnknownType(String.format("Unknown type encountered while parsing for false -> %s", contents.substring(start, position)), position);
-                }
-            }
-            case 'n' -> {
-                position++;
-
-                while (position < contents.length() && contents.charAt(position) != ']' && contents.charAt(position) != ',' && contents.charAt(position) != '}') {
-                    position++;
-                }
-
-                if (position >= contents.length()) {
-                    throw new JSONParseException("Encountered end of file while parsing for null", position);
-                }
-
-                if (contents.substring(start, position).equals("null")) {
-                    value = null;
-                } else {
-                    throw new UnknownType(String.format("Unknown type encountered while parsing for null -> %s", contents.substring(start, position)), position);
-                }
-            }
-            case 't' -> {
-                position++;
-
-                while (position < contents.length() && contents.charAt(position) != ']' && contents.charAt(position) != ',' && contents.charAt(position) != '}') {
-                    position++;
-                }
-
-                if (position >= contents.length()) {
-                    throw new JSONParseException("Encountered end of file while parsing for true", position);
-                }
-
-                if (contents.substring(start, position).equals("true")) {
-                    value = true;
-                } else {
-                    throw new UnknownType(String.format("Unknown type encountered while parsing for true -> %s", contents.substring(start, position)), position);
-                }
+                // parse dict
             }
             default -> {
 
+                if (c == '-' || c >= '0' && c <= '9') {
+                    // parse int
+                } else if (c == 'n' || c == 'f' || c == 't') {
+                    // parse bool
+                } else {
+                    throw new UnknownType("Unknown type while attempting to create value", position); // doesnt follow any type patterns
+                }
+
+
+
             }
+
         }
 
         return value;
 
     }
     
-    private String parseString() {
-
-        StringBuilder value = new StringBuilder();
-
-        position++;
-
-        while (contents.charAt(position) != '"') {
-            value.append(contents.charAt(position));
-            position++;
-        }
-
-        position++; // leave position on the character after closing quote
-
-        return value.toString();
-    }
-
-    private int parseInteger() {
-
-        int start = position;
-
-        if (contents.charAt(position) == '-') {
-            position++;
-        }   
-
-        while (position < contents.length() && contents.charAt(position) >= '0' && contents.charAt(position) <= '9') {
-            position++;
-        }
-
-        if (position >= contents.length()) {
-            throw new JSONParseException("Encountered end of file while parsing int", position);
-        }
-
-        return Integer.parseInt(contents.substring(start, position));
-        
-    }
-
-    private Map<String, Object> parseDict() {
-
-        Map<String, Object> value = new HashMap<>();
-
-        position++;
-        skipWhiteSpace(); 
+    private Map<String, Object> parseKeys(Map<String, Object> fileObjMap) {
 
         String newKey;
-        Object newValue = new Object();
+
+
+        for (this.position = 0; this.position < contents.length(); this.position++) { // for char in file
+
+            char currentChar = contents.charAt(position);
+
+            if (currentChar == '"') { // start of key
+
+               
+                position++;
+                int startOfKey = position;
+
+
+                while (position < contents.length() && contents.charAt(position) != '"') { // run until end of key (ends on the closing quote)
+
+                    position++;
+
+                }   
+
+                if (position >= contents.length()) { // check if loop exited because of bad file
+                    throw new JSONParseException("Reached end of file while attempting to parse key", position);
+                }
+
+                if (contents.charAt(position) != '"') { // check if loop exited but didint end on end quote
+                    throw new JSONParseException(String.format("Unexpected char found instead of end quote %c", contents.charAt(position)), position);
+                }
+
+                if (contents.charAt(position) == '"') { // ensure loop exited and stayed on end quote (edge case could mess up key name if position is off)
+                    newKey = contents.substring(startOfKey, position); // position still on end quote bcs substring is exclusive (start - position - 1)
+
+                } else {
+                    throw new JSONParseException(String.format("Expected end quote got %c instead", contents.charAt(position)), startOfKey);
+                }
+
+                position++; // move past end quote
+                skipWhiteSpace(); // lands on :
+
+                if (position >= contents.length() || contents.charAt(position) != ':') { // if end of file reached or character not :
+                    if (position >= contents.length()) {
+                        throw new JSONParseException("End of file Unexpectadly reached", position);
+                    } else if (contents.charAt(position) != ':') {
+                        throw new JSONParseException(String.format("Expected : got %c", contents.charAt(position)), position);
+                    }
+
+                }
+
+                position++; // move to char after colon
+                skipWhiteSpace(); // move to start of value
+
+                if (!fileObjMap.containsKey(newKey)) {
+                    fileObjMap.put(newKey, dispatchParser()); // consumes value and leaves on the next non white space char after the value
+                }
+
+                
+            }
+
+
+        }
+
+
+        return fileObjMap;
+    }
+
+    private String parseString() { // current position is opening quote
         
-        if (position < contents.length() && contents.charAt(position) == '}') { // if empty dict
-            position++;
-            return value;
+        StringBuilder value = new StringBuilder();
+
+
+        if (contents.charAt(position) == '"') { // ensure position is start quote (edge case)
+            
+            position ++; // move to first character of the string value
+
+            while (position < contents.length() && contents.charAt(position) != '"') {
+                
+                if (contents.charAt(position) != '\\') { // if not escaped character add value and move position to next char
+                    value.append(contents.charAt(position));
+                    position++;
+                } else { // if escaped character call decoder from backslash and move position to next character after escaped character
+                    value.append(decodeEscape());
+                }
+
+
+            }
+
         }
-
-        while (position < contents.length() && contents.charAt(position) != '}') {
-
-            newKey = parseString();
-
-            skipWhiteSpace();
-
-            if (contents.charAt(position) == ':') {
-                position++;
-                skipWhiteSpace();
-
-                newValue = dispatchParser();
-            } else { 
-                throw new JSONParseException(String.format("Expected : got %c", contents.charAt(position)), position);
-            }
-
-            if (position >= contents.length()) {
-                throw new JSONParseException("Reached end of file while parsing dict", position);
-            }
-
-            value.put(newKey, newValue);
-            skipWhiteSpace();
-
-            char next = contents.charAt(position);
-
-            if (next == ',') {
-                position++;
-                skipWhiteSpace();
-            } else if (next != '}') {
-                throw new JSONParseException(String.format("Expected , or ] got %c", next), position);
-            }
-        }
-
-        return value;
-    }
-
-    private List<Object> parseList() { // parse a list that could contain any of the above data types itself included
-
-        List<Object> value = new ArrayList<>();
-
-        position++;
-        skipWhiteSpace();
-
-        if (position < contents.length() && contents.charAt(position) == ']') {
-            position++;
-            return value;
-        }
-
-        while (position < contents.length() && contents.charAt(position) != ']') { 
-            value.add(dispatchParser()); // run dispatch parser on the value (consumes entire value when ran so it will advance position to the next comma)
-            skipWhiteSpace();
-
-            if (position >= contents.length()) {
-                throw new JSONParseException("Reached end of file while parsing list", position);
-            }
-
-            char next = contents.charAt(position);
-
-            if (next == ',') {
-                position++;
-                skipWhiteSpace();
-            } else if (next != ']') {
-                throw new JSONParseException("Expected , or ] got neither", position);
-            }
-        }
-
-        position++;
 
         return value;
 
     }
+    
+
 
 }
 
 class JSONParseException extends RuntimeException {
+
     public JSONParseException(String message, int position) {
-        super(String.format("Failure | %s | at position | %d |", message, position));
+
+        super(String.format("Fail message | %s | at position | %d |", message, position));
 
     }
+    
 }
 
 class UnknownType extends RuntimeException {
     public UnknownType(String message, int position) {
-        super(String.format("Failure | %s | at position | %d |", message, position));
+        super(String.format("Fail message | %s | at position | %d |", message, position));
     }
 }
+
+
