@@ -2,5 +2,11 @@
     "something": "name",
     "another": 42,
     "another_another": "hello",
-    "list": ["something", 433, true, null]
+    "list": ["something", 433, true, null],
+    "dict": {
+        "something": ["another", 65],
+        "this": {
+            "hello": "name"
+        }
+    }
 }

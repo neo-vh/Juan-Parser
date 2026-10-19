@@ -66,7 +66,6 @@ public class JsonRead {
         return value;
     }
 
-
     private Map<String, Object> parseValue(Map<String, Object> fileObj) {
         
         char currentChar;
@@ -229,8 +228,50 @@ public class JsonRead {
 
         Map<String, Object> value = new HashMap<>();
 
-        return value;
+        position++;
+        skipWhiteSpace(); 
 
+        String newKey;
+        Object newValue = new Object();
+        
+        if (position < contents.length() && contents.charAt(position) == '}') { // if empty dict
+            position++;
+            return value;
+        }
+
+        while (position < contents.length() && contents.charAt(position) != '}') {
+
+            newKey = parseString();
+
+            skipWhiteSpace();
+
+            if (contents.charAt(position) == ':') {
+                position++;
+                skipWhiteSpace();
+
+                newValue = dispatchParser();
+            } else { 
+                throw new JSONParseException(String.format("Expected : got %c", contents.charAt(position)), position);
+            }
+
+            if (position >= contents.length()) {
+                throw new JSONParseException("Reached end of file while parsing dict", position);
+            }
+
+            value.put(newKey, newValue);
+            skipWhiteSpace();
+
+            char next = contents.charAt(position);
+
+            if (next == ',') {
+                position++;
+                skipWhiteSpace();
+            } else if (next != '}') {
+                throw new JSONParseException(String.format("Expected , or ] got %c", next), position);
+            }
+        }
+
+        return value;
     }
 
     private List<Object> parseList() { // parse a list that could contain any of the above data types itself included
