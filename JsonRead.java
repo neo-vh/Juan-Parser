@@ -38,23 +38,18 @@ public class JsonRead {
 
         switch (contents.charAt(position)) {
             case '"' -> {
-                System.out.println("calling string parser");
                 value = parseString();
             }
             case '[' -> {
-                System.out.println("calling array parser");
                 value = parseList();
             }
             case '{' -> {
-                System.out.println("calling object parser");
                 value = parseDict();
             }
             default -> {
                 if (contents.charAt(position) == '-' || contents.charAt(position) >= '0' && contents.charAt(position) <= '9') {
-                    System.out.println("calling int parser");
                     value = parseInteger();
                 } else if (contents.charAt(position) == 'f' || contents.charAt(position) == 't' || contents.charAt(position) == 'n') {
-                    System.out.println("calling boolean parser");
                     value = parseBoolean();
                 } else {
 
@@ -308,13 +303,6 @@ public class JsonRead {
 
         return value;
 
-    }
-
-    public static void main(String[] args) {
-        String file = "read_testing.json";
-        JsonRead reader = new JsonRead(file);
-        System.out.println(reader.fromJson());
-        
     }
 
 }
