@@ -27,17 +27,25 @@ public class JsonRead {
 
         int backslashPos = position;
 
-        position++;
+        position += 2; // lands after escaped character jumps from \ over character to next char since substring is exclusive for last value
 
         String escapedLiteral = contents.substring(backslashPos, position); // contains the entire escaped character
         char decoded; 
-        
 
+        switch (escapedLiteral) {
+        case "\\\"" -> decoded = '"';   // JSON: \"
+        case "\\\\" -> decoded = '\\';  // JSON: \\
+        case "\\/"  -> decoded = '/';   // JSON: \/
+        case "\\b"  -> decoded = '\b';
+        case "\\f"  -> decoded = '\f';
+        case "\\n"  -> decoded = '\n';
+        case "\\r"  -> decoded = '\r';
+        case "\\t"  -> decoded = '\t';
+        default -> throw new JSONParseException(
+            String.format("Invalid escaped character %s", escapedLiteral), backslashPos);
+    }
 
-
-        decoded = '0';
         return decoded;
-
 
     }
 
@@ -82,7 +90,7 @@ public class JsonRead {
             default -> {
 
                 if (c == '-' || c >= '0' && c <= '9') {
-                    // parse int
+                    value = parseInteger();
                 } else if (c == 'n' || c == 'f' || c == 't') {
                     // parse bool
                 } else {
@@ -191,8 +199,78 @@ public class JsonRead {
         return value.toString();
 
     }
-    
 
+    private Number parseInteger() { // current position is first number or digit of int value make sure it can parse decimals too
+
+        int startOfNum;
+        Number value;
+
+        if (contents.charAt(position) == '-') { // skip - and land on first number
+            startOfNum = position;
+            position++;
+
+            if (position < contents.length()) {
+                throw new JSONParseException("End of file reached while parsing Number", startOfNum);
+            }
+
+            if (contents.charAt(position) == '0') {
+                throw new JSONParseException("Json does not accept values such as -0", position);
+            }
+
+        } else { // lands on first number
+            startOfNum = position;
+        }
+
+        while (position < contents.length() && contents.charAt(position) >= '0' && contents.charAt(position) <= '9') {
+
+            position++; // advance position for each digit in value
+
+            if (position < contents.length() && contents.charAt(position) == '.') { // if decimal encountered skip past it and make sure its the only decimal in the current version of the substring also consume the decimal and land on the char after
+                
+               if (!contents.substring(startOfNum, position).contains(".")) { // check if its the only decimal
+
+                    position++; // consume decimal
+
+               } else {
+
+                    throw new JSONParseException("Multiple decimals found in value", startOfNum);
+
+               }
+
+               if (!(position < contents.length() && contents.charAt(position) >= '0' && contents.charAt(position) <= '9')) { // check next digit is valid and make sure new position is not end of file (ends on digit after decimal)
+
+                    if (position >= contents.length()) { // end of file reached
+
+                        throw new JSONParseException("End of file reached while checking decimal next digit", startOfNum);
+
+                    } else { // invalid digit
+
+                        throw new JSONParseException("No valid digit found after decimal", startOfNum);
+
+                    }
+
+               }
+
+
+            }   
+
+        }
+
+        if (contents.substring(startOfNum, position).contains(".")) {
+
+            value = Double.valueOf(contents.substring(startOfNum, position));
+
+        } else {
+
+            value = Integer.valueOf(contents.substring(startOfNum, position));
+
+        }
+
+
+        return value;
+
+    }
+    
 
 }
 
