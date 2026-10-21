@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 import java.nio.file.*;
+import java.lang.reflect.*;
 public class JsonWrite {
 
 String name = "juan";
@@ -14,6 +15,7 @@ public static void main(String[] args)
     map.put("neo", 15);
     map.put("liam", 56 );
     map.put("jan", test);
+    map.put("scores", new int[] {12, 40, 60});
     try{
         writes(map);
     }catch(IOException e){}
@@ -86,6 +88,13 @@ private static String formatValue(Object value) {
     if (value instanceof Number || value instanceof Boolean){
         return String.valueOf(value);
     }
+    if (value.getClass().isArray()) {
+    StringJoiner elements = new StringJoiner(",", "[", "]");
+    for (int i = 0; i < Array.getLength(value); i++) {
+        elements.add(formatValue(Array.get(value, i)));
+    }
+    return elements.toString();
+}
     if ( value instanceof Map<?, ?>){
         Map<?, ?> nestedkMap = (Map<?, ?>) value;
         StringJoiner entries = new StringJoiner(",", "{", "}");
