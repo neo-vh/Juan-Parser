@@ -21,6 +21,23 @@
     JsonWrite writer = new JsonWrite("Your file path as a string");
     writer.write(Map to write);
     ```
+
+## What to expect from each method
+
+### JsonRead
+JsonRead's .fromJson method returns the entire file as one Java hashmap containing all keys and values nested or not, it will
+
+- Read the file top to bottom
+- check for start of keys (")
+- if key encountered it reads it and moves to check for the colon indicating the value
+- when colon is encountered it moves to the value and reads it calls dispatch parser which calls the needed parser for the identified data type
+- once the entire key value pair is read and consumed it adds it to the Map and moves to the next key
+
+### JsonWrite
+JsonWrite's .write method takes a Hashmap and replaces the current file contents with that map, it will (juan doen die man)
+
+
+
 ## Purpose of this Project
 
 While practicing java Maven and Gradle required me to change my entire folder structure to use a json parser and I was too lazy
