@@ -82,7 +82,7 @@ public class JsonRead {
                 value = parseString();
             }
             case '[' -> {  
-                // parse array
+                value = parseArray();
             }
             case '{' -> {
                 // parse dict
@@ -94,7 +94,7 @@ public class JsonRead {
                 } else if (c == 'n' || c == 'f' || c == 't') {
                     // parse bool
                 } else {
-                    throw new UnknownType("Unknown type while attempting to create value", position); // doesnt follow any type patterns
+                    throw new UnknownType(String.format("Unknown type while attempting to create value %c", contents.charAt(position)), position); // doesnt follow any type patterns
                 }
 
 
@@ -196,6 +196,8 @@ public class JsonRead {
 
         }
 
+        position++;
+
         return value.toString();
 
     }
@@ -268,6 +270,68 @@ public class JsonRead {
 
 
         return value;
+
+    }
+
+    private List<Object> parseArray() { // starts on opening [
+
+        List<Object> value = new ArrayList<>();
+
+        int startOfArray = position;
+
+        if (contents.charAt(position) != '[') {
+            
+            throw new JSONParseException(String.format("Expected [ got %c", contents.charAt(position)), position);
+
+        }
+
+        position++; // lands on opener of contained value
+        skipWhiteSpace(); // ensures position isnt random space
+
+        if (position < contents.length() && contents.charAt(position) == ']') {
+            
+            return value;
+
+        } else {
+            if (position >= contents.length()) {
+                throw new JSONParseException("Reached end of file parsing array", position);
+            }
+        }
+
+
+
+        while (position < contents.length() && contents.charAt(position) != ']') { // checks until end of array
+
+
+            if (contents.charAt(position) == ',') { // if on seperator
+                
+                position++; // moves off seperator
+                skipWhiteSpace();
+
+                value.add(dispatchParser()); // consumes rest of value and moves forward
+                continue;
+
+            }
+
+            value.add(dispatchParser()); // consumes first value and moves past white space
+            skipWhiteSpace();
+
+            if (position >= contents.length()) {
+                throw new JSONParseException("End of file reached", position);
+            }
+
+            if  (contents.charAt(position) == ']') {
+                position++; // moves off end of array
+                break;
+            }
+
+        }
+
+        skipWhiteSpace();
+        System.out.println(value);
+
+        return value;
+
 
     }
     
