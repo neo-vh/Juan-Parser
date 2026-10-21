@@ -9,4 +9,16 @@
 
 - JsonWrite takes a hashmap <String, Object> and formats it to json formatting then writes it to the specified json file
 
+## How to use methods
+
+- JsonRead
+  - ```java
+    JsonReader reader = new JsonReader("Your file path as a string");
+    reader.fromJson();
+  '''
+- JsonWrite
+  - '''java
+    
+    '''   
+
 **ps. juan IS hom**
