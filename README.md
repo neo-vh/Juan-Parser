@@ -33,7 +33,7 @@ JsonRead's .fromJson method returns the entire file as one Java hashmap containi
 - when colon is encountered it moves to the value and reads it calls dispatch parser which calls the needed parser for the identified data type
 - once the entire key value pair is read and consumed it adds it to the Map and moves to the next key
 
-### JsonWrite
+### [JsonWrite](./JsonWrite.java)
 JsonWrite's .write method takes a Hashmap and replaces the current file contents with that map, it will (juan doen die man)
 
 
