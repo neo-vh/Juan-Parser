@@ -57,6 +57,7 @@ While practicing java Maven and Gradle required me to change my entire folder st
 - Make it reliable while still learning Java (both of us)
 - Fun
 
+***
 
 ***This was written by 2 guys with a combined Java experience of 3 weeks over the span of 1 week it barely works***
 
