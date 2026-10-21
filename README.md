@@ -1,7 +1,7 @@
 # Juan-Parser
 ## custom json parser bcs maven and gradle suck
 
-*(read and write currently only read and write test files you can change the files they read hardcoded in the code itself or remove the main methods to use them)*
+*(read and write, currently only read and write test files you can change the files they read hardcoded in the code itself or remove the main methods to use them)*
 
 - JsonParse contains a readFile helper
 
@@ -25,16 +25,27 @@
 ## What to expect from each method
 
 ### [JsonRead](./JsonRead.java)
-JsonRead's .fromJson method returns the entire file as one Java hashmap containing all keys and values nested or not, it will
+***JsonRead's .fromJson method returns the entire file as one Java hashmap containing all keys and values nested or not, it will***
 
 - Read the file top to bottom
 - check for start of keys (")
 - if key encountered it reads it and moves to check for the colon indicating the value
 - when colon is encountered it moves to the value and reads it calls dispatch parser which calls the needed parser for the identified data type
 - once the entire key value pair is read and consumed it adds it to the Map and moves to the next key
+- Uses a global position throughout the file to retain position context and keeps a final version of the string file contents for parsing
 
 ### [JsonWrite](./JsonWrite.java)
-JsonWrite's .write method takes a Hashmap and replaces the current file contents with that map, it will (juan doen die man)
+***JsonWrite's .write method takes a Hashmap and replaces the current file contents with that map, it will*** 
+(juan doen die man)
+
+### [JsonParse](./JsonParse.java)
+JsonParse conains utility and although the methods inside are really only helpers they are used a bunch, it contains
+
+- **readFile**
+  - takes a file path and returns the contents as a string
+  - ```java
+    String fileContents = JsonParse.readFile(filePath as a string);
+    ```
 
 
 
@@ -45,7 +56,6 @@ While practicing java Maven and Gradle required me to change my entire folder st
 - Make a custom json parser to avoid gradle or maven for small projects
 - Make it reliable while still learning Java (both of us)
 - Fun
-
 
 
 **ps. juan IS hom**
