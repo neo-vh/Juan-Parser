@@ -262,7 +262,7 @@ public class JsonRead {
                 position++;
                 skipWhiteSpace();
             } else if (next != '}') {
-                throw new JSONParseException(String.format("Expected , or ] got %c", next), position);
+                throw new JSONParseException(String.format("Expected , or } got %c", next), position);
             }
         }
 

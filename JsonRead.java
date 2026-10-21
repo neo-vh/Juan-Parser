@@ -85,7 +85,8 @@ public class JsonRead {
                 value = parseArray();
             }
             case '{' -> {
-                // parse dict
+                value = parseDict();
+
             }
             default -> {
 
@@ -211,12 +212,12 @@ public class JsonRead {
             startOfNum = position;
             position++;
 
-            if (position < contents.length()) {
+            if (position >= contents.length()) {
                 throw new JSONParseException("End of file reached while parsing Number", startOfNum);
             }
 
-            if (contents.charAt(position) == '0') {
-                throw new JSONParseException("Json does not accept values such as -0", position);
+            if (contents.charAt(position) < '0' || contents.charAt(position) > '9') {
+                throw new JSONParseException("Expected digit after minus sign", position);
             }
 
         } else { // lands on first number
@@ -288,6 +289,7 @@ public class JsonRead {
 
         if (position < contents.length() && contents.charAt(position) == ']') {
             
+            position++; // consume entire value
             return value;
 
         } else {
@@ -318,18 +320,92 @@ public class JsonRead {
                 throw new JSONParseException("End of file reached", position);
             }
 
-            if  (contents.charAt(position) == ']') {
-                position++; // moves off end of array
-                break;
+        }
+
+        skipWhiteSpace();
+
+        if (contents.charAt(position) == ']') {
+            position++; // ensure value is completely consumed
+        } 
+
+        return value;
+
+
+    }
+
+    private Map<String, Object> parseDict() { // starts on opening {
+        
+        Map<String, Object> finalValue = new HashMap<>();
+
+        String newKey;
+        Object newValue;
+
+        position++; // move to first non white space in dict
+        skipWhiteSpace();
+
+        if (position < contents.length() && contents.charAt(position) == '}') { // check for empty dict
+            
+            position++;
+            return finalValue;
+
+        }
+
+        if (position >= contents.length()) {
+            throw new JSONParseException("End of file reached while attempting to parse dictionary", position);
+        }
+
+        while (position < contents.length() && contents.charAt(position) != '}') { // loop till end of file or end of dict
+
+            if (contents.charAt(position) == '"') {
+                newKey = parseString(); // consumes key and moves to colon
+                skipWhiteSpace();
+
+                if (position >= contents.length()) {
+                    throw new JSONParseException("end of file reached while parsing dictionary", position);
+                }
+
+            } else {
+                throw new JSONParseException(String.format("Expected start of string (double quote) got %c", contents.charAt(position)), position);
+            }
+
+            if (contents.charAt(position) != ':') {
+
+                throw new JSONParseException(String.format("Expected Colon got %c", contents.charAt(position)), position);
+
+            }
+
+            position++; // move off colon to start of value
+            skipWhiteSpace();
+
+            if (position >= contents.length()) {
+                throw new JSONParseException("Reached end of file while parsing for a value", position);
+            }
+
+            newValue = dispatchParser(); // dispatch parser of first char of value (will be recursive and consume and return entire value) lands on char after value
+
+            if (position >= contents.length()) {
+                throw new JSONParseException("End of file reached while parsing dictionary", position);
+            }
+
+            finalValue.put(newKey, newValue); // add value to list position still on char after last value (expected end of dictionary or comma)
+            skipWhiteSpace();
+
+            if (contents.charAt(position) == ',') { // check for seperator
+
+                position++;
+                skipWhiteSpace();
+
+            } else if (contents.charAt(position) != '}') { // check for end of dict
+                throw new JSONParseException(String.format("Expected comma or end of dict got %c", contents.charAt(position)), position);
             }
 
         }
 
-        skipWhiteSpace();
-        System.out.println(value);
+        if (contents.charAt(position) == '}') {
+            position++; // ensure entire dict gets consumed
+        }
 
-        return value;
-
+        return finalValue;
 
     }
     
@@ -351,5 +427,4 @@ class UnknownType extends RuntimeException {
         super(String.format("Fail message | %s | at position | %d |", message, position));
     }
 }
-
 
