@@ -1,22 +1,25 @@
 import java.io.*;
 import java.util.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
+import java.nio.file.*;
 public class JsonWrite {
 
+String name = "juan";
 public static void main(String[] args)
 {
-    HashMap<String, Integer> map = new HashMap<>();
+    HashMap<String, Object> test = new HashMap<>();
+    test.put("j", 7);
+    test.put("rope", "laalal");                                                                                                                                                                                                                                                                                                                             
+    HashMap<String, Object> map = new HashMap<>();                                                                      
     map.put("juan", 16);
     map.put("neo", 15);
+    map.put("liam", 56 );
+    map.put("jan", test);
     try{
         writes(map);
     }catch(IOException e){}
 
 }
-public static void writes(HashMap<String, Integer> structure) throws IOException
+public static void writes(HashMap<String, Object> structure) throws IOException
 { 
 
 Set<String> kns = structure.keySet();
@@ -24,8 +27,6 @@ Set<String> kns = structure.keySet();
 
 String[] na = new String[kns.size()];
 // na new array
-
-Map<String, Integer> finalmap = new HashMap<>();
 for(int i = 0; i< kns.size(); i++){
     na[i] = String.valueOf(kns.toArray()[i]);
     String qkns = "\"" + na[i] + "\"";
@@ -42,12 +43,71 @@ for(int i = 0; i< kns.size(); i++){
     
 // qkns quote keys and values    
 }
-StringJoiner json = new StringJoiner(",", "{", "}");
-for(Map.Entry<String, Integer> entry : structure.entrySet()) {
+/* Files.writeString(Path.of("testing.json"), json.toString()); */
+ 
+String json = convertMaptoJson(structure);
+Files.writeString(Path.of("testing.json"), json);
+
+
+
+/* StringJoiner json = new StringJoiner(",", "{", "}");
+for(Map.Entry<String, Object> entry : structure.entrySet()) {
+   if(entry.getValue() instanceof Integer ){ 
     json.add("\"" + entry.getKey() + "\"" + ":" + entry.getValue());
+   } else if(entry.getValue() instanceof Boolean){
+    json.add("\"" + entry.getKey() + "\"" + ":" + String.valueOf(entry.getValue()).toLowerCase());
+   }else if(entry.getValue() == null) {
+     json.add("\"" + entry.getKey() + "\"" + ": null");
+ 
+   }else if(entry.getValue() instanceof String){
+    json.add("\"" + entry.getKey() + "\"" + ":" + "\"" + entry.getValue()+ "\"");
+   
+   } */
 }
-Files.writeString(Path.of("testing.json"), json.toString()); // gebruik op die oomblik n relative path beter om absolute te gebruik (C:\Users\USER\Desktop\Juan-Parser\testing.json) haat jou :)
+public static String convertMaptoJson(Map<String, Object> map){
+    StringJoiner entries = new StringJoiner(",", "{", "}");
+
+    for ( Map.Entry<String, Object> entry : map.entrySet()) { 
+
+        String key = "\"" + escapeJsonString(entry.getKey()) + "\"";
+        entries.add(key + ":" + formatValue(entry.getValue()));
+
+    }
+    return entries.toString();
+
+}
+private static String formatValue(Object value) {
+    if( value == null){
+        return "null";
+    }
+    if (value instanceof String){
+        return "\"" + escapeJsonString((String) value) + "\"";
+    }
+    if (value instanceof Number || value instanceof Boolean){
+        return String.valueOf(value);
+    }
+    if ( value instanceof Map<?, ?>){
+        Map<?, ?> nestedkMap = (Map<?, ?>) value;
+        StringJoiner entries = new StringJoiner(",", "{", "}");
+        for (Map.Entry<?, ?> entry : nestedkMap.entrySet()){
+            String key = "\"" + escapeJsonString(String.valueOf(entry.getKey())) + "\"";
+            entries.add(key + ":" + formatValue(entry.getValue()));
+        }
+        return entries.toString();
+    }
+    throw new IllegalArgumentException(
+        "Unsupported value type:" + value.getClass()
+        .getName()    );
 
 
 }
+private static String escapeJsonString(String text){
+    return text
+    .replace("\\", "\\\\")
+    .replace("\"", "\\\"")
+    .replace("\n", "\\n")
+    .replace("\t", "\\t")
+    .replace("\r", "\\r");
+}
+
 }
