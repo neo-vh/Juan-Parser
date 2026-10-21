@@ -277,8 +277,6 @@ public class JsonRead {
 
         List<Object> value = new ArrayList<>();
 
-        int startOfArray = position;
-
         if (contents.charAt(position) != '[') {
             
             throw new JSONParseException(String.format("Expected [ got %c", contents.charAt(position)), position);
