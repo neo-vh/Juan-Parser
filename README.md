@@ -15,10 +15,10 @@
   - ```java
     JsonReader reader = new JsonReader("Your file path as a string");
     reader.fromJson();
-    
+    ```
 - JsonWrite
   - '''java
-    
-    '''   
+      
+    ``` 
 
 **ps. juan IS hom**
