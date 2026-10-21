@@ -13,12 +13,13 @@
 
 - JsonRead
   - ```java
-    JsonReader reader = new JsonReader("Your file path as a string");
+    JsonRead reader = new JsonRead("Your file path as a string");
     reader.fromJson();
     ```
 - JsonWrite
-  - '''java
-      
+  - ```java
+    JsonWrite writer = new JsonWrite("Your file path as a string");
+    writer.write(Map to write);
     ``` 
 
 **ps. juan IS hom**
