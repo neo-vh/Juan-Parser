@@ -20,6 +20,15 @@
   - ```java
     JsonWrite writer = new JsonWrite("Your file path as a string");
     writer.write(Map to write);
-    ``` 
+    ```
+## Purpose of this Project
+
+While practicing java Maven and Gradle required me to change my entire folder structure to use a json parser and I was too lazy
+
+- Make a custom json parser to avoid gradle or maven for small projects
+- Make it reliable while still learning Java (both of us)
+- Fun
+
+
 
 **ps. juan IS hom**
