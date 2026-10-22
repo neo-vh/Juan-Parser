@@ -33,6 +33,9 @@
 - when colon is encountered it moves to the value and reads it calls dispatch parser which calls the needed parser for the identified data type
 - once the entire key value pair is read and consumed it adds it to the Map and moves to the next key
 - Uses a global position throughout the file to retain position context and keeps a final version of the string file contents for parsing
+- can parse everything from a string to a hasmap should work
+- the returned map will be the reverse of the order the json is in due to the way values are added to the new map you can change this but the code is meant for small projects and
+simply grabbing data
 
 ### [JsonWrite](./JsonWrite.java)
 ***JsonWrite's .write method takes a Hashmap and replaces the current file contents with that map, it will*** 
