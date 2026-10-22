@@ -56,7 +56,7 @@ JsonParse conains utility and although the methods inside are really only helper
     String fileContents = JsonParse.readFile(filePath as a string);
     ```
 
-
+***
 
 ## Purpose of this Project
 
@@ -64,10 +64,11 @@ While practicing java Maven and Gradle required me to change my entire folder st
 
 - Make a custom json parser to avoid gradle or maven for small projects
 - Make it reliable while still learning Java (both of us)
-- Fun
+- Ensure parser can read and write json aswell as reliably grab and change values in the map **printing is not strictly needed** 
+thus the order of values will not be fixed
 
 ***
 
 ***This was written by 2 guys with a combined Java experience of 3 weeks over the span of 1 week it barely works***
 
-**ps. juan IS hom**
+**ps. IS hom**
