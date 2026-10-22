@@ -36,7 +36,13 @@
 
 ### [JsonWrite](./JsonWrite.java)
 ***JsonWrite's .write method takes a Hashmap and replaces the current file contents with that map, it will*** 
-(juan doen die man)
+
+- takes a hashmap 
+- loops through each entry of that map and identifies the key
+- checks the type of the value associated with that key
+- applies the type's formatting (hello -> "hello")
+- takes all data types inside hashmap(hopefully)
+- writes a single string to the file containing the formatted key value pairs
 
 ### [JsonParse](./JsonParse.java)
 JsonParse conains utility and although the methods inside are really only helpers they are used a bunch, it contains
@@ -57,5 +63,8 @@ While practicing java Maven and Gradle required me to change my entire folder st
 - Make it reliable while still learning Java (both of us)
 - Fun
 
+***
+
+***This was written by 2 guys with a combined Java experience of 3 weeks over the span of 1 week it barely works***
 
 **ps. juan IS hom**
