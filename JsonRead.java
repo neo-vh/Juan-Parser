@@ -93,7 +93,7 @@ public class JsonRead {
                 if (c == '-' || c >= '0' && c <= '9') {
                     value = parseInteger();
                 } else if (c == 'n' || c == 'f' || c == 't') {
-                    // parse bool
+                    value = parseBool();
                 } else {
                     throw new UnknownType(String.format("Unknown type while attempting to create value %c", contents.charAt(position)), position); // doesnt follow any type patterns
                 }
@@ -406,6 +406,37 @@ public class JsonRead {
         }
 
         return finalValue;
+
+    }
+
+    private Object parseBool() { // first char of bool t f or n
+
+        Object value = null;
+
+        if (contents.startsWith("true", position)) {
+
+            position += 4; // move to char right after bool value (startswith is offset by 0-3 thus length is only 3 and moving 4 positions is right after bool)
+            value = true;
+
+        } else if (contents.startsWith("false", position)) {
+
+            position += 5; // move to char right after bool value
+            value = false;
+
+        } else if (contents.startsWith("null", position)) {
+
+            position += 4; // move to char right after bool value 
+            value = null;
+
+        } else {
+            throw new JSONParseException("Expected true false or null got none", position);
+        }
+
+        if (position >= contents.length()) {
+            throw new JSONParseException("Reached end of file while consuming bool", position);
+        }
+
+        return value;
 
     }
     
