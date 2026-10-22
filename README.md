@@ -41,6 +41,7 @@
 - loops through each entry of that map and identifies the key
 - checks the type of the value associated with that key
 - applies the type's formatting (hello -> "hello")
+- takes all data types inside hashmap(hopefully)
 - writes a single string to the file containing the formatted key value pairs
 
 ### [JsonParse](./JsonParse.java)
