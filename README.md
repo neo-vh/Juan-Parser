@@ -70,6 +70,4 @@ thus the order of values will not be fixed
 
 ***This was written by 2 guys with a combined Java experience of 3 weeks over the span of 1 week it barely works***
 
-**ps. Juan IS hom**
-
-$${\color{red}Red}$$
+$${\color{red}**ps. Juan IS hom**}$$
