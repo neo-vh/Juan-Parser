@@ -62,6 +62,14 @@ private static String formatValue(Object value) {
     }
     return elements.toString();
 }
+if(value instanceof ArrayList){
+    ((ArrayList<?>) value).size();
+    StringJoiner element = new StringJoiner(",", "[", "]");
+    for(int i = 0; i < ((ArrayList<?>) value).size(); i++){
+        element.add(formatValue(((ArrayList<?>)value).get(i)));
+    }
+    return element.toString();
+}
     if ( value instanceof Map<?, ?>){
         Map<?, ?> nestedkMap = (Map<?, ?>) value;
         StringJoiner entries = new StringJoiner(",\n        ", "{\n        ", "\n    }");
