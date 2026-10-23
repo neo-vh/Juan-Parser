@@ -274,7 +274,7 @@ public class JsonRead {
 
     }
 
-    private Object[] parseArray() { // starts on opening [
+    private List<String, Object> parseArray() { // starts on opening [
 
         List<Object> value = new ArrayList<>();
 
@@ -290,7 +290,7 @@ public class JsonRead {
         if (position < contents.length() && contents.charAt(position) == ']') {
             
             position++; // consume entire value
-            return value.toArray();
+            return value;
 
         } else {
             if (position >= contents.length()) {
@@ -328,7 +328,7 @@ public class JsonRead {
             position++; // ensure value is completely consumed
         } 
 
-        return value.toArray();
+        return value;
 
 
     }
