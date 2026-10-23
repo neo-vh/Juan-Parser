@@ -7,17 +7,23 @@ public class JsonWrite {
 String name = "juan";
 public static void main(String[] args)
 {
-    HashMap<String, Object> test = new HashMap<>();
-    test.put("j", 7);
-    test.put("rope", "laalal");                                                                                                                                                                                                                                                                                                                             
+/*     HashMap<String, Object> test = new HashMap<>();
+    test.put("j", 60679067);
+    test.put("rope", "sadawad");    
+     HashMap<String, Object> test3 = new HashMap<>();        
+     test3.put("juan", "pielsize1");
+     test3.put("neo", "peelsize0");                                                                                                                                                                                                                                                                                                                 
     HashMap<String, Object> map = new HashMap<>();                                                                      
     map.put("juan", 16);
     map.put("neo", 15);
-    map.put("liam", 56 );
+    map.put("liam", test3 );
     map.put("jan", test);
-    map.put("scores", new int[] {12, 40, 60});
+    map.put("scores", new int[] {12, 40, 60}); */
+
+    JsonRead reader = new JsonRead("testing.json");
+    HashMap<String, Object> nananan = new HashMap<>(reader.fromJson());
     try{
-        writes(map);
+        writes(nananan);
     }catch(IOException e){}
 
 }
@@ -28,7 +34,7 @@ Files.writeString(Path.of("testing.json"), json);
 }
 
 public static String convertMaptoJson(Map<String, Object> map){
-    StringJoiner entries = new StringJoiner(",", "{", "}");
+    StringJoiner entries = new StringJoiner(",\n    ", "{\n    ", "\n}");
 
     for ( Map.Entry<String, Object> entry : map.entrySet()) { 
 
@@ -58,7 +64,7 @@ private static String formatValue(Object value) {
 }
     if ( value instanceof Map<?, ?>){
         Map<?, ?> nestedkMap = (Map<?, ?>) value;
-        StringJoiner entries = new StringJoiner(",", "{", "}");
+        StringJoiner entries = new StringJoiner(",\n        ", "{\n        ", "\n    }");
         for (Map.Entry<?, ?> entry : nestedkMap.entrySet()){
             String key = "\"" + escapeJsonString(String.valueOf(entry.getKey())) + "\"";
             entries.add(key + ":" + formatValue(entry.getValue()));

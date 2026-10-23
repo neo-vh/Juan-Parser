@@ -1,1 +1,13 @@
-{"scores":[12,40,60],"jan":{"rope":"laalal","j":7},"juan":16,"neo":15,"liam":56, "bool": true, "null": null}
+{
+    "juan":16,
+    "neo":15,
+    "liam":{
+        "juan":"pielsize1",
+        "neo":"peelsize0"
+    },
+    "scores":[12,40,60],
+    "jan":{
+        "rope":"sadawad",
+        "j":60679067
+    }
+}
