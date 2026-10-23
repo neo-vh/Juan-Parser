@@ -4,29 +4,6 @@ import java.nio.file.*;
 import java.lang.reflect.*;
 public class JsonWrite {
 
-String name = "juan";
-public static void main(String[] args)
-{
-/*     HashMap<String, Object> test = new HashMap<>();
-    test.put("j", 60679067);
-    test.put("rope", "sadawad");    
-     HashMap<String, Object> test3 = new HashMap<>();        
-     test3.put("juan", "pielsize1");
-     test3.put("neo", "peelsize0");                                                                                                                                                                                                                                                                                                                 
-    HashMap<String, Object> map = new HashMap<>();                                                                      
-    map.put("juan", 16);
-    map.put("neo", 15);
-    map.put("liam", test3 );
-    map.put("jan", test);
-    map.put("scores", new int[] {12, 40, 60}); */
-
-    JsonRead reader = new JsonRead("testing.json");
-    HashMap<String, Object> nananan = new HashMap<>(reader.fromJson());
-    try{
-        writes(nananan);
-    }catch(IOException e){}
-
-}
 public static void writes(HashMap<String, Object> structure) throws IOException
 { 
     String json = convertMaptoJson(structure);

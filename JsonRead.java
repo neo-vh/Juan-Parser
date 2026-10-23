@@ -1,3 +1,4 @@
+package juanparser;
 
 import java.util.*;
 
@@ -274,7 +275,7 @@ public class JsonRead {
 
     }
 
-    private List<String, Object> parseArray() { // starts on opening [
+    private List<Object> parseArray() { // starts on opening [
 
         List<Object> value = new ArrayList<>();
 
@@ -402,7 +403,7 @@ public class JsonRead {
         }
 
         if (contents.charAt(position) == '}') {
-            position++; // ensure entire dict gets consumed
+            position++; // ensure entire dict gets consumed 
         }
 
         return finalValue;
