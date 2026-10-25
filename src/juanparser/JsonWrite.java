@@ -5,10 +5,10 @@ import java.nio.file.*;
 import java.lang.reflect.*;
 public class JsonWrite {
 
-public static void writes(HashMap<String, Object> structure) throws IOException
+public static void writes(HashMap<String, Object> structure, String path) throws IOException
 { 
     String json = convertMaptoJson(structure);
-Files.writeString(Path.of("testing.json"), json);
+Files.writeString(Path.of(path), json);
 }
 
 public static String convertMaptoJson(Map<String, Object> map){
