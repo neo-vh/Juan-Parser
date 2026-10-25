@@ -18,8 +18,7 @@
     ```
 - JsonWrite
   - ```java
-    JsonWrite writer = new JsonWrite("Your file path as a string");
-    writer.write(Map to write);
+    JsonWrite.writes(Hashmap to write, filepath to write too); // will overide current file contents
     ```
 
 ## What to expect from each method
@@ -46,6 +45,7 @@ simply grabbing data
 - applies the type's formatting (hello -> "hello")
 - takes all data types inside hashmap(hopefully)
 - writes a single string to the file containing the formatted key value pairs
+-overrides old content of file (append method can be added by using jsonread in combination with jsonwrite)
 
 ### [JsonParse](./JsonParse.java)
 JsonParse conains utility and although the methods inside are really only helpers they are used a bunch, it contains
@@ -65,6 +65,13 @@ While practicing java Maven and Gradle required me to change my entire folder st
 - Make it reliable while still learning Java (both of us)
 - Ensure parser can read and write json aswell as reliably grab and change values in the map **printing is not strictly needed** 
 thus the order of values will not be fixed
+
+## Some Edge Cases yet to be fixed
+Big json parsers handle these but we dont need too
+- unicode character in json will likely just return an error or unexpected string
+- long integer values might be incorectly parsed
+- appending is not natively supported but you can use JsonRead to make a map
+of the old contents then add your map to it before writing it
 
 ***
 
