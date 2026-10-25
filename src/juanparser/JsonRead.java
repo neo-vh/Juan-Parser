@@ -1,3 +1,4 @@
+package juanparser;
 
 import java.util.*;
 
@@ -7,15 +8,15 @@ public class JsonRead {
     final String contents;
     int position = 0;
 
-    public static void main(String[] args) {
-        JsonRead reader = new JsonRead("testing.json");
-        System.out.println(reader.fromJson());
-    }
 
+    public JsonRead(String content, boolean path) {
+        
+        if (!path) {
+            this.contents = content;
+        } else {
+            this.contents = JsonParse.readFile(content);
+        }
 
-    public JsonRead(String filePath) {
-
-        this.contents = JsonParse.readFile(filePath);
 
     }
 
