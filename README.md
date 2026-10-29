@@ -71,7 +71,17 @@ Big json parsers handle these but we dont need too
 - unicode character in json will likely just return an error or unexpected string
 - long integer values might be incorectly parsed
 - appending is not natively supported but you can use JsonRead to make a map
-of the old contents then add your map to it before writing it
+  of the old contents then add your map to it before writing it
+**Example of above Suggestion**
+```java
+JsonRead reader = new JsonRead("filepath", true);
+Map<String, Object> oldContent = reader.fromJson();
+
+oldContent.put("new Content", newContent);
+
+JsonWrite.writes(oldColent, "filepath");
+
+```
 
 ***
 
