@@ -13,7 +13,7 @@
 
 - JsonRead
   - ```java
-    JsonRead reader = new JsonRead("Your file path as a string");
+    JsonRead reader = new JsonRead("Your file path as a string/raw json string", filepath or not (boolean));
     reader.fromJson();
     ```
 - JsonWrite
