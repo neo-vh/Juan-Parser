@@ -84,6 +84,36 @@ JsonWrite.writes(oldColent, "filepath");
 
 ```
 
+## How to use this in your Projects?
+
+I had a lot of trouble getting this work with my practice projects maven and gradle seem to be pretty useful but the steps I used are
+
+- create a lib folder in your root folder
+- use the build.bat inside the juanparser folder to create a jar of the current contents
+- inside your project use something similar to the following for running your code
+
+```batch
+@echo off
+cd /d "%~dp0"
+
+if not exist "out" mkdir out
+
+javac -d out -cp "..\lib\juanparser.jar" *.java
+
+if errorlevel 1 (
+    echo Compile failed.
+    exit /b 1
+)
+
+java -cp "..\lib\juanparser.jar;out" program
+
+if errorlevel 1 (
+    echo Program exited with an error.
+)
+
+```
+There are likely easier ways to do this but I had a lot of trouble getting it to work any other way (if you are using a custom code runner you can make a .vscode\settings.json file for the path to run
+
 ***
 
 ***This was written by 2 guys with a combined Java experience of 3 weeks over the span of 1 week it barely works***
