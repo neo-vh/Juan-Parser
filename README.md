@@ -72,6 +72,7 @@ Big json parsers handle these but we dont need too
 - long integer values might be incorectly parsed
 - appending is not natively supported but you can use JsonRead to make a map
   of the old contents then add your map to it before writing it
+
 **Example of above Suggestion**
 ```java
 JsonRead reader = new JsonRead("filepath", true);
