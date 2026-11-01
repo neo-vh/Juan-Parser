@@ -36,7 +36,7 @@
 - the returned map will be the reverse of the order the json is in due to the way values are added to the new map you can change this but the code is meant for small projects and
 simply grabbing data
 
-### [JsonWrite](./JsonWrite.java)
+### [JsonWrite](./src/juanparserJsonWrite.java)
 ***JsonWrite's .write method takes a Hashmap and replaces the current file contents with that map, it will*** 
 
 - takes a hashmap 
@@ -47,7 +47,7 @@ simply grabbing data
 - writes a single string to the file containing the formatted key value pairs
 -overrides old content of file (append method can be added by using jsonread in combination with jsonwrite)
 
-### [JsonParse](./JsonParse.java)
+### [JsonParse](./src/juanparserJsonParse.java)
 JsonParse conains utility and although the methods inside are really only helpers they are used a bunch, it contains
 
 - **readFile**
@@ -89,7 +89,7 @@ JsonWrite.writes(oldColent, "filepath");
 I had a lot of trouble getting this work with my practice projects maven and gradle seem to be pretty useful but the steps I used are
 
 - create a lib folder in your root folder
-- use the build.bat inside the juanparser folder to create a jar of the current contents
+- use the [build.bat](./build.bat) inside the juanparser folder to create a jar of the current contents
 - inside your project use something similar to the following for running your code
 
 ```batch
