@@ -23,7 +23,7 @@
 
 ## What to expect from each method
 
-### [JsonRead](./JsonRead.java)
+### [JsonRead](./src/juanparser/JsonRead.java)
 ***JsonRead's .fromJson method returns the entire file as one Java hashmap containing all keys and values nested or not, it will***
 
 - Read the file top to bottom
